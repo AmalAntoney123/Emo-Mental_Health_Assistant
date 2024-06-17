@@ -1,7 +1,7 @@
 # Emo 🌟
 **Emo: Elevate Your Emotional Well-being**
 
-![Emo Logo](https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%2Fsearch%2Fimages%3Fk%3Dmental%2Bhealth%2Bflat%2Bdesign&psig=AOvVaw2OQEuxJCxkdSkQnq_c3xmL&ust=1718694148629000&source=images&cd=vfe&opi=89978449&ved=0CBQQjRxqFwoTCJCjuumI4oYDFQAAAAAdAAAAABAQ)
+![Emo Logo](https://t3.ftcdn.net/jpg/03/36/42/52/360_F_336425203_ExxGDWdhc7WNNrEZPRHelPM7NiufuZoz.jpg)
 
 Emo is a comprehensive mental health application that leverages gamification techniques, machine learning (ML), and artificial intelligence (AI) to motivate users to prioritize their mental well-being. Through streak-based rewards, mood tracking, and virtual therapy sessions, Emo aims to foster a positive mindset and encourage daily engagement in activities that promote good mental health.
 
