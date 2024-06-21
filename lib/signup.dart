@@ -1,11 +1,16 @@
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors
+
 import 'package:emo/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:emo/theme/theme_notifier.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  SignupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +77,7 @@ class SignupScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Handle signup action
-                          },
+                          onPressed: () => _signup(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 Theme.of(context).colorScheme.onPrimary,
@@ -129,5 +132,23 @@ class SignupScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _signup(BuildContext context) async {
+    try {
+      // Navigate to home screen or any other screen after successful signup
+      Navigator.pushNamed(context, Routes.homeScreen);
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'weak-password') {
+        message = 'The password provided is too weak.';
+      } else if (e.code == 'email-already-in-use') {
+        message = 'The account already exist.';
+      } else {
+        message = 'An error occurred. Please try again.${e.code}';
+      }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 }

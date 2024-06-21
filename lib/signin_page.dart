@@ -1,11 +1,16 @@
-import 'package:emo/navigation/navigation.dart';
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:emo/theme/theme_notifier.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:emo/navigation/navigation.dart';
 
 class SigninScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+
+  SigninScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -72,9 +77,7 @@ class SigninScreen extends StatelessWidget {
                     children: [
                       Expanded(
                         child: ElevatedButton(
-                          onPressed: () {
-                            // Handle signup action
-                          },
+                          onPressed: () => _login(context),
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 Theme.of(context).colorScheme.onPrimary,
@@ -88,7 +91,7 @@ class SigninScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
-                                Icons.app_registration,
+                                Icons.login,
                                 color:
                                     Theme.of(context).colorScheme.onBackground,
                               ),
@@ -129,5 +132,23 @@ class SigninScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _login(BuildContext context) async {
+    try {
+      // Navigate to home screen or any other screen after successful login
+      Navigator.pushNamed(context, Routes.homeScreen);
+    } on FirebaseAuthException catch (e) {
+      String message;
+      if (e.code == 'invalid-email') {
+        message = 'No user found for that email.';
+      } else if (e.code == 'invalid-credential') {
+        message = 'Wrong password provided.';
+      } else {
+        message = 'An error occurred. Please try again:${e.code}';
+      }
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 }

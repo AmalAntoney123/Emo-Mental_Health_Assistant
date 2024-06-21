@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:emo/theme/theme_notifier.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatelessWidget {
   @override
@@ -179,8 +180,15 @@ class LoginScreen extends StatelessWidget {
       Navigator.pushNamed(context, Routes.homeScreen);
     } catch (e) {
       Navigator.pop(context); // Remove loading indicator
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sign in failed: $e')),
+
+      Fluttertoast.showToast(
+        msg: 'Sign in failed: $e',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
       );
     }
   }
