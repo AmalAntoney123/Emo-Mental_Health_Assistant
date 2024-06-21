@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 // Define your new color palette
 const darkPrimaryColor = Color.fromARGB(255, 255, 255, 255);
 const darkAccentColor = Color.fromRGBO(38, 43, 55, 1);
-const darkButtonColor = Color.fromRGBO(136, 131, 240, 1);
-const darkTextColor = Color(0xffF6E9E9);
+const darkButtonColor = Color.fromRGBO(151, 147, 235, 1);
+const darkTextColor = Color.fromRGBO(247, 250, 254, 1);
 
 const lightPrimaryColor = Color.fromARGB(255, 0, 0, 0);
 const lightAccentColor = Color.fromRGBO(247, 250, 254, 1);
 const lightButtonColor = Color.fromRGBO(
     136, 131, 240, 1); // Keep the orange for the button in light theme as well
-const lightTextColor = Color.fromRGBO(247, 250, 254, 1);
+const lightTextColor = Color.fromRGBO(220, 235, 255, 1);
 
 final lightTheme = ThemeData(
   brightness: Brightness.light,

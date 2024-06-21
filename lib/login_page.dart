@@ -1,6 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:emo/navigation/navigation.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:emo/theme/theme_notifier.dart';
 
@@ -47,7 +50,7 @@ class LoginScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            // Handle login action
+                            Navigator.pushNamed(context, Routes.signinScreen);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -90,7 +93,7 @@ class LoginScreen extends StatelessWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () {
-                            // Handle Google login action
+                            signInGoogle(context);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -132,7 +135,7 @@ class LoginScreen extends StatelessWidget {
                   SizedBox(height: 40),
                   GestureDetector(
                     onTap: () {
-                      // Handle sign-up action
+                      Navigator.pushNamed(context, Routes.signupScreen);
                     },
                     child: Text(
                       'Don\'t have an account? Sign Up',
@@ -149,5 +152,36 @@ class LoginScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> signInGoogle(BuildContext context) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+
+    try {
+      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      Navigator.pop(context); // Remove loading indicator
+
+      // Navigate to the desired screen after successful login
+      Navigator.pushNamed(context, Routes.homeScreen);
+    } catch (e) {
+      Navigator.pop(context); // Remove loading indicator
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign in failed: $e')),
+      );
+    }
   }
 }

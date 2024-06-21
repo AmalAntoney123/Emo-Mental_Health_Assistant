@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "598480896445",
+    "project_id": "emo-app-3133d",
+    "storage_bucket": "emo-app-3133d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:598480896445:android:ea2330ba4f43b5397512d4",
+        "android_client_info": {
+          "package_name": "com.example.emo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "598480896445-r73hcus9m2t529lph2k76fb47mdepn13.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.emo",
+            "certificate_hash": "c006e2f3a92f76934b87d6090b0eed92c5c12bfb"
+          }
+        },
+        {
+          "client_id": "598480896445-70g8oklad3o8fd093reh61mapl1u14cn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZ5-6denVE0eO6ubc7O_mTggs94WDMCAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "598480896445-70g8oklad3o8fd093reh61mapl1u14cn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

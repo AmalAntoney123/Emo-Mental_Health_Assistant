@@ -33,11 +33,22 @@ class IntroScreen extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.background,
               logo: Padding(
                 padding: const EdgeInsets.only(bottom: 20),
-                child: Image.asset(
-                  'assets/icon.png',
+                child: Container(
                   width: 200,
                   height: 200,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(60)) // White background color
+                      ),
+                  child: ClipRect(
+                    child: Image.asset(
+                      'assets/hi-emo.png',
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -62,11 +73,22 @@ class IntroScreen extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.background,
               logo: Padding(
                 padding: const EdgeInsets.only(bottom: 20),
-                child: Image.asset(
-                  'assets/icon.png',
+                child: Container(
                   width: 200,
                   height: 200,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(60)) // White background color
+                      ),
+                  child: ClipRect(
+                    child: Image.asset(
+                      'assets/smile-emo.png',
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -91,11 +113,22 @@ class IntroScreen extends StatelessWidget {
               backgroundColor: Theme.of(context).colorScheme.background,
               logo: Padding(
                 padding: const EdgeInsets.only(bottom: 20),
-                child: Image.asset(
-                  'assets/icon.png',
+                child: Container(
                   width: 200,
                   height: 200,
-                  color: Theme.of(context).colorScheme.onPrimary,
+                  padding: EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.onBackground,
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(60)) // White background color
+                      ),
+                  child: ClipRect(
+                    child: Image.asset(
+                      'assets/down-emo.png',
+                      color: Theme.of(context).colorScheme.onPrimary,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
                 ),
               ),
             ),
