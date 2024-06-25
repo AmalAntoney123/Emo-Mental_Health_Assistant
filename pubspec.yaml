@@ -42,6 +42,7 @@ dependencies:
   firebase_core: ^2.27.0
   google_sign_in: ^6.2.1
   fluttertoast: ^8.2.5
+  shared_preferences: ^2.2.3
 
 
 dev_dependencies:

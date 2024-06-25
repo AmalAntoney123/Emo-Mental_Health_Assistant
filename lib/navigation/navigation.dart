@@ -1,6 +1,6 @@
 import 'package:emo/home_page.dart';
 import 'package:emo/signin_page.dart';
-import 'package:emo/signup.dart';
+import 'package:emo/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:emo/login_page.dart'; // Import your login page
 import 'package:emo/intro_page.dart'; // Import your intro screen

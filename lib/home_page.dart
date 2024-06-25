@@ -1,17 +1,53 @@
-import 'package:emo/widgets/option_card.dart';
+import 'package:emo/navigation/navigation.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkAuthentication();
+    });
+  }
+
+  void _checkAuthentication() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      Navigator.pushNamed(context, Routes.loginScreen);
+    }
+  }
+
+  void _logout() async {
+    await FirebaseAuth.instance.signOut();
+    await GoogleSignIn().signOut();
+    Navigator.pushNamed(context, Routes.loginScreen);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
         elevation: 0,
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {},
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout, color: Colors.black),
+            onPressed: _logout,
+          ),
+        ],
       ),
       body: ListView(
         padding: EdgeInsets.all(16),
@@ -23,69 +59,38 @@ class HomeScreen extends StatelessWidget {
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 24),
-          Container(
-            height: 160,
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.red[100],
-                  child: Icon(Icons.medical_services, color: Colors.red),
-                ),
-                title: Text('Doctors',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle:
-                    Text('Find the perfect doctors that fits your needs.'),
-              ),
-            ),
+          buildCard(
+            title: 'Doctors',
+            subtitle: 'Find the perfect doctors that fits your needs.',
+            icon: Icons.medical_services,
+            color: Colors.red,
+            bgColor: Colors.red[100]!,
           ),
           SizedBox(height: 16),
-          Container(
-            height: 160,
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.blue[100],
-                  child: Icon(Icons.fitness_center, color: Colors.blue),
-                ),
-                title: Text('Workouts',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text('We have all the workouts you need.'),
-              ),
-            ),
+          buildCard(
+            title: 'Workouts',
+            subtitle: 'We have all the workouts you need.',
+            icon: Icons.fitness_center,
+            color: Colors.blue,
+            bgColor: Colors.blue[100]!,
           ),
           SizedBox(height: 16),
-          Container(
-            height: 160,
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15)),
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Colors.green[100],
-                  child: Icon(Icons.event, color: Colors.green),
-                ),
-                title: Text('Events',
-                    style: TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text('Check the events happening in your city.'),
-              ),
-            ),
+          buildCard(
+            title: 'Events',
+            subtitle: 'Check the events happening in your city.',
+            icon: Icons.event,
+            color: Colors.green,
+            bgColor: Colors.green[100]!,
           ),
         ],
       ),
       floatingActionButton: SizedBox(
-        width: 72, // Increased size
-        height: 72, // Increased size
+        width: 72,
+        height: 72,
         child: FloatingActionButton(
           child: Icon(
             Icons.add,
-            size: 30, // Increased icon size
+            size: 30,
           ),
           onPressed: () {},
           elevation: 2.0,
@@ -93,6 +98,33 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildFloatingBottomAppBar(),
+    );
+  }
+
+  Widget buildCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color color,
+    required Color bgColor,
+  }) {
+    return SizedBox(
+      height: 160,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: bgColor,
+            child: Icon(icon, color: color),
+          ),
+          title: Text(
+            title,
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
+          subtitle: Text(subtitle),
+        ),
+      ),
     );
   }
 }
@@ -117,14 +149,14 @@ Widget _buildFloatingBottomAppBar() {
         child: BottomAppBar(
           color: Colors.white,
           notchMargin: 8.0,
-          child: Container(
+          child: SizedBox(
             height: 60,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 IconButton(icon: Icon(Icons.home), onPressed: () {}),
                 IconButton(icon: Icon(Icons.search), onPressed: () {}),
-                SizedBox(width: 60), // Increased space for FAB
+                SizedBox(width: 60),
                 IconButton(icon: Icon(Icons.message), onPressed: () {}),
                 IconButton(icon: Icon(Icons.person), onPressed: () {}),
               ],
