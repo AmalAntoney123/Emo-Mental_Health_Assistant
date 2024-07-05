@@ -169,20 +169,45 @@ class SignupScreen extends StatelessWidget {
       );
       return;
     }
+
     try {
-      // Navigate to home screen or any other screen after successful signup
-      Navigator.pushNamed(context, Routes.homeScreen);
+      // Attempt to create user with email and password
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // If we get here, sign up was successful
+      if (userCredential.user != null) {
+        // Navigate to home screen after successful signup
+        await userCredential.user!.sendEmailVerification();
+
+        // Show a message to the user
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content:
+                  Text('Verification email sent. Please check your inbox.')),
+        );
+
+        // Navigate to a verification pending screen or login screen
+        Navigator.pushReplacementNamed(context, Routes.loginScreen);
+      }
     } on FirebaseAuthException catch (e) {
       String message;
       if (e.code == 'weak-password') {
         message = 'The password provided is too weak.';
       } else if (e.code == 'email-already-in-use') {
-        message = 'The account already exist.';
+        message = 'An account already exists for that email.';
       } else {
-        message = 'An error occurred. Please try again.${e.code}';
+        message = 'An error occurred. Please try again. ${e.code}';
       }
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
+    } catch (e) {
+      // Handle any other errors
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('An unexpected error occurred. Please try again.')));
     }
   }
 }

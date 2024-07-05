@@ -6,11 +6,17 @@ import 'package:emo/theme/theme_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:emo/navigation/navigation.dart';
 
-class SigninScreen extends StatelessWidget {
+class SigninScreen extends StatefulWidget {
+  const SigninScreen({super.key});
+
+  @override
+  _SigninScreenState createState() => _SigninScreenState();
+}
+
+class _SigninScreenState extends State<SigninScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-
-  SigninScreen({super.key});
+  int failedAttempts = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +117,7 @@ class SigninScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 40),
+                  SizedBox(height: 20),
                   GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(context, Routes.signupScreen);
@@ -123,6 +129,21 @@ class SigninScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  SizedBox(height: 20),
+                  if (failedAttempts >= 1)
+                    GestureDetector(
+                      onTap: () {
+                        // Navigate to reset password screen
+                        Navigator.pushNamed(
+                            context, Routes.resetPasswordScreen);
+                      },
+                      child: Text(
+                        'Forgot Password? Reset Here',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
                   SizedBox(height: 40),
                 ],
               ),
@@ -135,9 +156,81 @@ class SigninScreen extends StatelessWidget {
   }
 
   Future<void> _login(BuildContext context) async {
+    // Check if any of the fields are empty
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in all fields')),
+      );
+      return;
+    }
+
     try {
-      // Navigate to home screen or any other screen after successful login
-      Navigator.pushNamed(context, Routes.homeScreen);
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text,
+        password: passwordController.text,
+      );
+
+      // If we get here, sign in was successful
+      if (userCredential.user != null) {
+        if (userCredential.user!.emailVerified) {
+          // Email is verified, proceed to home screen
+          Navigator.pushReplacementNamed(context, Routes.homeScreen);
+        } else {
+          // Email is not verified
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Please verify your email before logging in.')),
+          );
+          // Optionally, offer to resend verification email
+          bool? resend = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              final theme = Theme.of(context);
+              return AlertDialog(
+                backgroundColor: theme.colorScheme.background,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                title: Text(
+                  'Email not verified',
+                  style: TextStyle(color: theme.colorScheme.onPrimary),
+                ),
+                content: Text(
+                  'Would you like to resend the verification email?',
+                  style: TextStyle(color: theme.colorScheme.primary),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'No',
+                      style: TextStyle(color: theme.colorScheme.onPrimary),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(false),
+                  ),
+                  ElevatedButton(
+                    child: Text('Yes'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: theme.colorScheme.background,
+                      backgroundColor: theme.colorScheme.onPrimary,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(true),
+                  ),
+                ],
+              );
+            },
+          );
+          if (resend == true) {
+            await userCredential.user!.sendEmailVerification();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(
+                      'Verification email sent. Please check your inbox.')),
+            );
+          }
+          // Sign out the user since they haven't verified their email
+          await FirebaseAuth.instance.signOut();
+        }
+      }
     } on FirebaseAuthException catch (e) {
       String message;
       if (e.code == 'invalid-email') {
@@ -145,10 +238,14 @@ class SigninScreen extends StatelessWidget {
       } else if (e.code == 'invalid-credential') {
         message = 'Wrong password provided.';
       } else {
-        message = 'An error occurred. Please try again:${e.code}';
+        message = 'An error occurred. Please try again: ${e.code}';
       }
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text(message)));
+
+      setState(() {
+        failedAttempts++;
+      });
     }
   }
 }

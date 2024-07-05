@@ -43,6 +43,7 @@ dependencies:
   google_sign_in: ^6.2.1
   fluttertoast: ^8.2.5
   shared_preferences: ^2.2.3
+  toast: ^0.3.0
 
 
 dev_dependencies:
