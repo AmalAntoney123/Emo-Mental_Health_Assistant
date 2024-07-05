@@ -2,8 +2,6 @@
 
 import 'package:emo/navigation/navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:emo/theme/theme_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class SignupScreen extends StatelessWidget {
