@@ -175,7 +175,7 @@ class _SigninScreenState extends State<SigninScreen> {
       if (userCredential.user != null) {
         if (userCredential.user!.emailVerified) {
           // Email is verified, proceed to home screen
-          Navigator.pushReplacementNamed(context, Routes.homeScreen);
+          Navigator.pushReplacementNamed(context, Routes.userDataCollection);
         } else {
           // Email is not verified
           ScaffoldMessenger.of(context).showSnackBar(

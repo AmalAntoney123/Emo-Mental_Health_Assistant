@@ -1,280 +1,461 @@
+// ignore_for_file: prefer_const_constructors, sort_child_properties_last
+
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:im_stepper/stepper.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserDataCollection extends StatefulWidget {
+  const UserDataCollection({Key? key}) : super(key: key);
+
   @override
   _UserDataCollectionState createState() => _UserDataCollectionState();
 }
 
 class _UserDataCollectionState extends State<UserDataCollection> {
-  int _currentStep = 0;
-  final _formKey = GlobalKey<FormState>();
+  int activeStep = 0;
+  final int totalSteps = 6;
 
-  String name = '';
-  DateTime? dateOfBirth;
-  String gender = '';
-  String? phoneNumber;
-  Map<String, String> address = {};
-  List<String> mentalHealthConditions = [];
-  List<String> goals = ['', ''];
-  String preferredLanguage = 'English';
-  List<String> interests = [];
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
+  String? gender;
+  final TextEditingController countryController = TextEditingController();
+  String? mentalHealthGoal;
+  List<String> selectedInterests = [];
+  bool isTherapist = false;
 
-  List<Step> get _steps => [
-        _buildPersonalInfoStep(),
-        _buildContactInfoStep(),
-        _buildHealthInfoStep(),
-        _buildPreferencesStep(),
-      ];
+  bool isLoading = false;
+
+  final List<String> interests = [
+    'Meditation',
+    'Yoga',
+    'Reading',
+    'Exercise',
+    'Art',
+    'Music',
+    'Nature',
+    'Cooking',
+    'Writing',
+    'Socializing',
+    'Mindfulness',
+    'Therapy',
+    'Self-care',
+    'Journaling',
+    'Spirituality',
+    'Gratitude',
+    'Breathing exercises',
+    'Healthy eating',
+    'Sleep hygiene',
+    'Stress management'
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Form(
-          key: _formKey,
-          child: Stepper(
-            currentStep: _currentStep,
-            onStepContinue: _next,
-            onStepCancel: _cancel,
-            steps: _steps,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            SizedBox(
+              height: 40,
+            ),
+            Text("Complete Your Profile",
+                style: TextStyle(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold)),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _buildStep(),
+                ),
+              ),
+            ),
+            IconStepper(
+              icons: [
+                Icon(Icons.person),
+                Icon(Icons.cake),
+                Icon(Icons.flag),
+                Icon(Icons.psychology),
+                Icon(Icons.interests),
+              ],
+              activeStep: activeStep,
+              onStepReached: (index) {
+                setState(() {
+                  activeStep = index;
+                });
+              },
+              activeStepColor: Theme.of(context).colorScheme.onPrimary,
+              lineColor: Theme.of(context).colorScheme.onPrimary,
+              lineLength: 50,
+              enableNextPreviousButtons: false,
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Step _buildPersonalInfoStep() {
-    return Step(
-      title: Text('Personal Information'),
-      content: Column(
-        children: [
-          _buildTextField(
-            controller: TextEditingController(text: name),
-            labelText: 'Name',
-            onChanged: (value) => name = value,
-            validator: (value) =>
-                value!.isEmpty ? 'Please enter your name' : null,
-          ),
-          SizedBox(height: 20),
-          InkWell(
-            onTap: () async {
-              final DateTime? picked = await showDatePicker(
-                context: context,
-                initialDate: DateTime.now(),
-                firstDate: DateTime(1900),
-                lastDate: DateTime.now(),
-              );
-              if (picked != null) setState(() => dateOfBirth = picked);
-            },
-            child: InputDecorator(
-              decoration: InputDecoration(
-                labelText: 'Date of Birth',
-                labelStyle:
-                    TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-              ),
-              child: Text(
-                dateOfBirth != null
-                    ? DateFormat('yyyy-MM-dd').format(dateOfBirth!)
-                    : 'Select Date',
-                style:
-                    TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-              ),
-            ),
-          ),
-          SizedBox(height: 20),
-          _buildDropdownField(
-            value: gender,
-            labelText: 'Gender',
-            items: ['Male', 'Female', 'Other'],
-            onChanged: (value) => setState(() => gender = value!),
-            validator: (value) => value == null ? 'Please select gender' : null,
-          ),
-        ],
-      ),
-      isActive: _currentStep >= 0,
-    );
-  }
-
-  Step _buildContactInfoStep() {
-    return Step(
-      title: Text('Contact Information'),
-      content: Column(
-        children: [
-          _buildTextField(
-            controller: TextEditingController(text: phoneNumber),
-            labelText: 'Phone Number (Optional)',
-            keyboardType: TextInputType.phone,
-            onChanged: (value) => phoneNumber = value,
-          ),
-          SizedBox(height: 20),
-          _buildTextField(
-            controller: TextEditingController(text: address['street']),
-            labelText: 'Street',
-            onChanged: (value) => address['street'] = value,
-          ),
-          SizedBox(height: 20),
-          _buildTextField(
-            controller: TextEditingController(text: address['city']),
-            labelText: 'City',
-            onChanged: (value) => address['city'] = value,
-          ),
-          SizedBox(height: 20),
-          _buildTextField(
-            controller: TextEditingController(text: address['state']),
-            labelText: 'State',
-            onChanged: (value) => address['state'] = value,
-          ),
-          SizedBox(height: 20),
-          _buildTextField(
-            controller: TextEditingController(text: address['country']),
-            labelText: 'Country',
-            onChanged: (value) => address['country'] = value,
-          ),
-          SizedBox(height: 20),
-          _buildTextField(
-            controller: TextEditingController(text: address['postalCode']),
-            labelText: 'Postal Code',
-            onChanged: (value) => address['postalCode'] = value,
-          ),
-        ],
-      ),
-      isActive: _currentStep >= 1,
-    );
-  }
-
-  Step _buildHealthInfoStep() {
-    return Step(
-      title: Text('Health Information'),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('Mental Health Conditions',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          _buildCheckboxListTile('Anxiety', 'Anxiety'),
-          _buildCheckboxListTile('Depression', 'Depression'),
-          SizedBox(height: 20),
-          Text('Goals',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          SizedBox(height: 10),
-          _buildTextField(
-            controller: TextEditingController(text: goals[0]),
-            labelText: 'Goal 1',
-            onChanged: (value) => goals[0] = value,
-          ),
-          SizedBox(height: 20),
-          _buildTextField(
-            controller: TextEditingController(text: goals[1]),
-            labelText: 'Goal 2',
-            onChanged: (value) => goals[1] = value,
-          ),
-        ],
-      ),
-      isActive: _currentStep >= 2,
-    );
-  }
-
-  Step _buildPreferencesStep() {
-    return Step(
-      title: Text('Preferences'),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildDropdownField(
-            value: preferredLanguage,
-            labelText: 'Preferred Language',
-            items: ['English', 'Spanish', 'French', 'German'],
-            onChanged: (value) => setState(() => preferredLanguage = value!),
-          ),
-          SizedBox(height: 20),
-          Text('Interests',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          _buildCheckboxListTile('Stress Management', 'Stress Management'),
-          _buildCheckboxListTile('Mindfulness', 'Mindfulness'),
-        ],
-      ),
-      isActive: _currentStep >= 3,
-    );
-  }
-
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String labelText,
-    TextInputType? keyboardType,
-    required Function(String) onChanged,
-    String? Function(String?)? validator,
-  }) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-      style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-      keyboardType: keyboardType,
-      onChanged: onChanged,
-    );
-  }
-
-  Widget _buildDropdownField({
-    required String value,
-    required String labelText,
-    required List<String> items,
-    required Function(String?) onChanged,
-    String? Function(String?)? validator,
-  }) {
-    return DropdownButtonFormField<String>(
-      value: value.isNotEmpty ? value : null,
-      decoration: InputDecoration(
-        labelText: labelText,
-        labelStyle: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-      ),
-      style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
-      items: items.map((String item) {
-        return DropdownMenuItem<String>(value: item, child: Text(item));
-      }).toList(),
-      onChanged: onChanged,
-      validator: validator,
-    );
-  }
-
-  Widget _buildCheckboxListTile(String title, String value) {
-    return CheckboxListTile(
-      title: Text(title,
-          style: TextStyle(color: Theme.of(context).colorScheme.onPrimary)),
-      value: mentalHealthConditions.contains(value),
-      onChanged: (bool? checked) {
-        setState(() {
-          if (checked!) {
-            mentalHealthConditions.add(value);
-          } else {
-            mentalHealthConditions.remove(value);
-          }
-        });
-      },
-    );
-  }
-
-  void _next() {
-    if (_currentStep < _steps.length - 1) {
-      setState(() => _currentStep++);
-    } else {
-      if (_formKey.currentState!.validate()) {
-        _formKey.currentState!.save();
-        // Here you would typically send the data to a server or save it locally
-        print(
-            'Data collected: $name, $dateOfBirth, $gender, $phoneNumber, $address, $mentalHealthConditions, $goals, $preferredLanguage, $interests');
-      }
+  Widget _buildStep() {
+    switch (activeStep) {
+      case 0:
+        return _buildNameStep();
+      case 1:
+        return _buildAgeGenderStep();
+      case 2:
+        return _buildCountryStep();
+      case 3:
+        return _buildMentalHealthGoalStep();
+      case 4:
+        return _buildInterestsStep();
+      default:
+        return Container();
     }
   }
 
-  void _cancel() {
-    if (_currentStep > 0) {
-      setState(() => _currentStep--);
+  Widget _buildNameStep() {
+    return SizedBox(
+      width: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 140,
+          ),
+          TextField(
+            controller: nameController,
+            decoration: InputDecoration(
+              labelText: 'Full Name',
+              labelStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          SizedBox(height: 20),
+          _buildNextButton(() {
+            if (nameController.text.isNotEmpty) {
+              setState(() {
+                activeStep++;
+              });
+            }
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAgeGenderStep() {
+    return SizedBox(
+      width: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 140,
+          ),
+          TextField(
+            controller: ageController,
+            decoration: InputDecoration(
+              labelText: 'Age',
+              labelStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          SizedBox(height: 20),
+          DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: 'Gender',
+              labelStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+            isExpanded: true,
+            value: gender,
+            hint: Text('Select Gender'),
+            items: ['Male', 'Female', 'Non-binary', 'Prefer not to say']
+                .map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                gender = newValue;
+              });
+            },
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          SizedBox(height: 20),
+          _buildNextButton(() {
+            if (ageController.text.isNotEmpty && gender != null) {
+              setState(() {
+                activeStep++;
+              });
+            }
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCountryStep() {
+    return SizedBox(
+      width: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 140,
+          ),
+          TextField(
+            controller: countryController,
+            decoration: InputDecoration(
+              labelText: 'Country',
+              labelStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          SizedBox(height: 20),
+          _buildNextButton(() {
+            if (countryController.text.isNotEmpty) {
+              setState(() {
+                activeStep++;
+              });
+            }
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildMentalHealthGoalStep() {
+    return SizedBox(
+      width: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 140,
+          ),
+          Text(
+            'What is your primary mental health goal?',
+            style: TextStyle(
+                fontSize: 18, color: Theme.of(context).colorScheme.primary),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+          DropdownButtonFormField<String>(
+            decoration: InputDecoration(
+              labelText: 'Goal',
+              labelStyle:
+                  TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              border:
+                  OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
+            ),
+            isExpanded: true,
+            value: mentalHealthGoal,
+            hint: Text('Select Goal'),
+            items: [
+              'Reduce Stress',
+              'Improve Mood',
+              'Increase Productivity',
+              'Better Sleep',
+              'Manage Anxiety',
+              'Other'
+            ].map((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+            onChanged: (String? newValue) {
+              setState(() {
+                mentalHealthGoal = newValue;
+              });
+            },
+            style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+          ),
+          SizedBox(height: 20),
+          _buildNextButton(() {
+            if (mentalHealthGoal != null) {
+              setState(() {
+                activeStep++;
+              });
+            }
+          }),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInterestsStep() {
+    return SizedBox(
+      width: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          SizedBox(
+            height: 40,
+          ),
+          Text(
+            'Select your interests (max 5):',
+            style: TextStyle(
+                fontSize: 18, color: Theme.of(context).colorScheme.primary),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 20),
+          Wrap(
+            alignment: WrapAlignment.center,
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: interests.map((interest) {
+              final isSelected = selectedInterests.contains(interest);
+              return FilterChip(
+                label: Text(
+                  interest,
+                  style: TextStyle(
+                    color: isSelected
+                        ? Theme.of(context)
+                            .colorScheme
+                            .onPrimary
+                            .withOpacity(0.7)
+                        : Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+                selected: isSelected,
+                onSelected: (bool selected) {
+                  setState(() {
+                    if (selected) {
+                      if (selectedInterests.length < 5) {
+                        selectedInterests.add(interest);
+                      }
+                    } else {
+                      selectedInterests.remove(interest);
+                    }
+                  });
+                },
+                selectedColor:
+                    Theme.of(context).colorScheme.onPrimary.withOpacity(0.2),
+                backgroundColor:
+                    Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(
+                    color: isSelected
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).colorScheme.onPrimary,
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: isLoading ? null : _submitUserInfo,
+            child: isLoading
+                ? CircularProgressIndicator()
+                : Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.done,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                      SizedBox(width: 8),
+                      Text(
+                        'Submit',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.onBackground,
+                        ),
+                      ),
+                    ],
+                  ),
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              backgroundColor: Theme.of(context).colorScheme.onPrimary,
+              padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNextButton(VoidCallback onPressed) {
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.arrow_forward,
+              color: Theme.of(context).colorScheme.onBackground),
+          SizedBox(width: 10),
+          Text(
+            'Next',
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+              fontSize: 20,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _submitUserInfo() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final databaseReference = FirebaseDatabase.instance.ref();
+        await databaseReference.child('users').child(user.uid).set({
+          'name': nameController.text,
+          'age': int.parse(ageController.text),
+          'gender': gender,
+          'country': countryController.text,
+          'mentalHealthGoal': mentalHealthGoal,
+          'interests': selectedInterests,
+        });
+
+        // Navigate to the main app screen
+        Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } catch (e) {
+      // Handle any errors
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving user info: $e')),
+      );
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 }

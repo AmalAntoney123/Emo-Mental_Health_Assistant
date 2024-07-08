@@ -1,4 +1,5 @@
 import 'package:emo/firebase_options.dart';
+import 'package:emo/user_data_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +40,7 @@ class MyApp extends StatelessWidget {
                 return CircularProgressIndicator(); // Or a splash screen
               } else {
                 final bool isFirstLaunch = snapshot.data ?? true;
-                return isFirstLaunch ? IntroScreen() : HomeScreen();
+                return isFirstLaunch ? IntroScreen() : UserDataCollection();
               }
             },
           ),
