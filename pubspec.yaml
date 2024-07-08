@@ -44,6 +44,10 @@ dependencies:
   fluttertoast: ^8.2.5
   shared_preferences: ^2.2.3
   toast: ^0.3.0
+  firebase_database: ^10.4.9
+  intl: ^0.19.0
+  dynamic_multi_step_form: ^1.1.5
+
 
 
 dev_dependencies:

@@ -1,9 +1,11 @@
 import 'package:emo/main_pages/home_content.dart';
 import 'package:emo/main_pages/profile_page.dart';
 import 'package:emo/navigation/navigation.dart';
+import 'package:emo/theme/theme_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -148,6 +150,19 @@ class _MainScreenState extends State<HomeScreen> {
               // Handle help tap
               Navigator.pop(context);
             },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Logout'),
+            onTap: () {
+              _logout();
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.sunny),
+            title: Text('Theme'),
+            onTap: () => Provider.of<ThemeNotifier>(context, listen: false)
+                .toggleTheme(),
           ),
           // Add more ListTiles for additional menu items
         ],
