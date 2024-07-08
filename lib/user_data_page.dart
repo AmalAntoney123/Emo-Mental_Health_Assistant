@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
-import 'package:emo/theme/theme_notifier.dart';
 
 class UserDataCollection extends StatefulWidget {
   @override
