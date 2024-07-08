@@ -192,6 +192,7 @@ class SignupScreen extends StatelessWidget {
         Navigator.pushReplacementNamed(context, Routes.loginScreen);
       }
     } on FirebaseAuthException catch (e) {
+      print('FirebaseAuthException: ${e.code} - ${e.message}');
       String message;
       if (e.code == 'weak-password') {
         message = 'The password provided is too weak.';
@@ -204,6 +205,7 @@ class SignupScreen extends StatelessWidget {
           .showSnackBar(SnackBar(content: Text(message)));
     } catch (e) {
       // Handle any other errors
+      print('Unexpected error: $e');
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('An unexpected error occurred. Please try again.')));
     }

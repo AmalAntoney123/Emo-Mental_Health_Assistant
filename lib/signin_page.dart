@@ -1,11 +1,9 @@
-// ignore_for_file: prefer_const_constructors, sort_child_properties_last, use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, prefer_const_constructors
 
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:emo/theme/theme_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:emo/navigation/navigation.dart';
 
 class SigninScreen extends StatefulWidget {
@@ -175,32 +173,9 @@ class _SigninScreenState extends State<SigninScreen> {
 
       // If we get here, sign in was successful
       if (userCredential.user != null) {
-        final DatabaseReference userRef = FirebaseDatabase.instanceFor(
-                app: Firebase.app(),
-                databaseURL:
-                    "https://emo-app-3133d-default-rtdb.asia-southeast1.firebasedatabase.app")
-            .reference()
-            .child('users')
-            .child(userCredential.user!.uid);
-        final DatabaseEvent userEvent = await userRef.once();
-        final DataSnapshot userSnapshot = userEvent.snapshot;
-
         if (userCredential.user!.emailVerified) {
-          // Email is verified
-          if (!userSnapshot.exists) {
-            // If user does not exist in Realtime Database, add them
-            await userRef.set({
-              'uid': userCredential.user!.uid,
-              'email': userCredential.user!.email,
-              'displayName': userCredential.user!.displayName ?? '',
-              'photoURL': userCredential.user!.photoURL ?? '',
-              'createdAt': ServerValue.timestamp,
-              // Add any other extra data you want to include
-              'extraData': 'yourExtraData'
-            });
-          }
-          // Proceed to home screen
-          Navigator.pushReplacementNamed(context, Routes.userDataCollection);
+          // Email is verified, proceed to home screen
+          Navigator.pushReplacementNamed(context, Routes.homeScreen);
         } else {
           // Email is not verified
           ScaffoldMessenger.of(context).showSnackBar(
