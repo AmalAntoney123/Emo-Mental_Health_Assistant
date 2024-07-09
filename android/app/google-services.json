@@ -1,8 +1,8 @@
 {
   "project_info": {
     "project_number": "598480896445",
-    "project_id": "emo-app-3133d",
     "firebase_url": "https://emo-app-3133d-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "emo-app-3133d",
     "storage_bucket": "emo-app-3133d.appspot.com"
   },
   "client": [
@@ -38,6 +38,13 @@
             {
               "client_id": "598480896445-70g8oklad3o8fd093reh61mapl1u14cn.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "598480896445-6nl0m8gtqh215rqe83jjd342a4pmufj2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.rentIt"
+              }
             }
           ]
         }

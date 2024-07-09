@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
-import 'package:emo/navigation/navigation.dart';
+import 'package:emo/utils/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
 import 'package:firebase_database/firebase_database.dart';

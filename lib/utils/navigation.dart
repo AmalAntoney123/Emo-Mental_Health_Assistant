@@ -1,11 +1,12 @@
-import 'package:emo/home_page.dart';
-import 'package:emo/reset_password_page.dart';
-import 'package:emo/signin_page.dart';
-import 'package:emo/signup_page.dart';
-import 'package:emo/user_data_page.dart';
+
+import 'package:emo/pages/home/home_page.dart';
+import 'package:emo/pages/intro/intro_page.dart';
+import 'package:emo/pages/login/login_page.dart';
+import 'package:emo/pages/login/signin_page.dart';
+import 'package:emo/pages/login/signup_page.dart';
+import 'package:emo/pages/login/user_data_page.dart';
+import 'package:emo/pages/profile/reset_password_page.dart';
 import 'package:flutter/material.dart';
-import 'package:emo/login_page.dart'; // Import your login page
-import 'package:emo/intro_page.dart'; // Import your intro screen
 
 class Routes {
   static const String introScreen = '/';

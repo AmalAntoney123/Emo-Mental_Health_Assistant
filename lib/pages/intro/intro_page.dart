@@ -1,6 +1,6 @@
+import 'package:emo/pages/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
-import 'package:emo/login_page.dart';
 
 class IntroScreen extends StatelessWidget {
   @override

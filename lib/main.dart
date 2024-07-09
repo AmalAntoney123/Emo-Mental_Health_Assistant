@@ -1,20 +1,16 @@
-import 'package:emo/firebase_options.dart';
+import 'package:emo/utils/navigation.dart';
+import 'package:emo/utils/theme.dart';
+import 'package:emo/utils/theme_notifier.dart';
+import 'package:emo/pages/home/home_page.dart';
+import 'package:emo/pages/intro/intro_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'navigation/navigation.dart';
-import 'theme/theme.dart';
-import 'theme/theme_notifier.dart';
-import 'home_page.dart';
-import 'intro_page.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
 
   runApp(
     ChangeNotifierProvider(
@@ -23,6 +19,8 @@ void main() async {
     ),
   );
 }
+
+class DefaultFirebaseOptions {}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

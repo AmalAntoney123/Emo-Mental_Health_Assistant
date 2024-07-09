@@ -1,7 +1,7 @@
-import 'package:emo/main_pages/home_content.dart';
-import 'package:emo/main_pages/profile_page.dart';
-import 'package:emo/navigation/navigation.dart';
-import 'package:emo/theme/theme_notifier.dart';
+import 'package:emo/utils/navigation.dart';
+import 'package:emo/utils/theme_notifier.dart';
+import 'package:emo/pages/home/home_content.dart';
+import 'package:emo/pages/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';

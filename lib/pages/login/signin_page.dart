@@ -1,11 +1,11 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors
 
+import 'package:emo/utils/navigation.dart';
+import 'package:emo/utils/theme_notifier.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:emo/theme/theme_notifier.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:emo/navigation/navigation.dart';
 
 class SigninScreen extends StatefulWidget {
   const SigninScreen({super.key});
