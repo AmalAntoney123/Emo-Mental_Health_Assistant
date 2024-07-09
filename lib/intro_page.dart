@@ -1,153 +1,116 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
-
-import 'package:emo/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:introduction_slider/introduction_slider.dart';
+import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
+import 'package:emo/login_page.dart';
 
 class IntroScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(14.0),
-        child: IntroductionSlider(
-          items: [
-            IntroductionSliderItem(
-              title: Text(
-                "Hey there, I'm Emo!",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              subtitle: Text(
-                "Your friendly guide to a happier mind!",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              backgroundColor: Theme.of(context).colorScheme.background,
-              logo: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(60)) // White background color
-                      ),
-                  child: ClipRect(
-                    child: Image.asset(
-                      'assets/hi-emo.png',
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            IntroductionSliderItem(
-              title: Text(
-                "Let's Track Your Mood!",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              subtitle: Text(
-                "Complete fun quizzes, earn streaks, and collect rewards!",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              backgroundColor: Theme.of(context).colorScheme.background,
-              logo: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(60)) // White background color
-                      ),
-                  child: ClipRect(
-                    child: Image.asset(
-                      'assets/smile-emo.png',
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            IntroductionSliderItem(
-              title: Text(
-                "Discover Personalized Support!",
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              subtitle: Text(
-                "From AI insights to virtual therapy sessions, I've got you covered!",
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              backgroundColor: Theme.of(context).colorScheme.background,
-              logo: Padding(
-                padding: const EdgeInsets.only(bottom: 20),
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onBackground,
-                      borderRadius: BorderRadius.all(
-                          Radius.circular(60)) // White background color
-                      ),
-                  child: ClipRect(
-                    child: Image.asset(
-                      'assets/down-emo.png',
-                      color: Theme.of(context).colorScheme.onPrimary,
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-          done: Done(
-            child: Icon(Icons.done),
-            home: LoginScreen(),
-            // Navigate to login page after completion
-          ),
-          next: Next(child: Icon(Icons.arrow_forward)),
-          back: Back(child: Icon(Icons.arrow_back)),
-          dotIndicator: DotIndicator(
-            selectedColor: Theme.of(context).colorScheme.onPrimary,
-          ),
-          initialPage: 0, // Initial page index
-          showStatusBar: true, // Show status bar (default is false)
-          physics: ScrollPhysics(), // Scroll physics, customize as needed
-          scrollDirection: Axis.horizontal, // Scroll direction
+    return OnBoardingSlider(
+      finishButtonText: 'Get Started',
+      onFinish: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginScreen()),
+        );
+      },
+      finishButtonStyle: FinishButtonStyle(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      ),
+      skipTextButton: Text(
+        'Skip',
+        style: TextStyle(
+          fontSize: 16,
+          color: Theme.of(context).colorScheme.primary,
+          fontWeight: FontWeight.w600,
         ),
+      ),
+      controllerColor: Theme.of(context).colorScheme.onPrimary,
+      totalPage: 3,
+      headerBackgroundColor: Theme.of(context).colorScheme.background,
+      pageBackgroundColor: Theme.of(context).colorScheme.background,
+      background: [
+        _buildLogoContainer(context, 'assets/hi-emo.png'),
+        _buildLogoContainer(context, 'assets/smile-emo.png'),
+        _buildLogoContainer(context, 'assets/down-emo.png'),
+      ],
+      speed: 1.8,
+      pageBodies: [
+        _buildPageContent(
+          context,
+          "Hey there, I'm Emo!",
+          "Your friendly guide to a happier mind!",
+        ),
+        _buildPageContent(
+          context,
+          "Let's Track Your Mood!",
+          "Complete fun quizzes, earn streaks, and collect rewards!",
+        ),
+        _buildPageContent(
+          context,
+          "Discover Personalized Support!",
+          "From AI insights to virtual therapy sessions, I've got you covered!",
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLogoContainer(BuildContext context, String assetPath) {
+    return Center(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height * 0.5,
+        child: Center(
+          child: Container(
+            width: 200,
+            height: 200,
+            padding: EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onBackground,
+              borderRadius: BorderRadius.all(Radius.circular(60)),
+            ),
+            child: ClipRect(
+              child: Image.asset(
+                assetPath,
+                color: Theme.of(context).colorScheme.onPrimary,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPageContent(
+      BuildContext context, String title, String subtitle) {
+    return Container(
+      alignment: Alignment.center,
+      width: MediaQuery.of(context).size.width,
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 24.0,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            subtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Theme.of(context).colorScheme.primary,
+              fontSize: 18.0,
+            ),
+          ),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.2),
+        ],
       ),
     );
   }

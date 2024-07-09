@@ -1,8 +1,8 @@
 // ignore_for_file: prefer_const_constructors, sort_child_properties_last
 
+import 'package:emo/navigation/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_slider/flutter_onboarding_slider.dart';
-import 'package:im_stepper/stepper.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -62,6 +62,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
         Container(color: Theme.of(context).scaffoldBackgroundColor),
         Container(color: Theme.of(context).scaffoldBackgroundColor),
       ],
+      controllerColor: Theme.of(context).colorScheme.onPrimary,
       totalPage: 5,
       speed: 1.8,
       pageBodies: [
@@ -444,7 +445,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
         });
 
         // Navigate to the main app screen
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.pushReplacementNamed(context, Routes.homeScreen);
       }
     } catch (e) {
       // Handle any errors

@@ -26,6 +26,8 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<ThemeNotifier>(
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
                 return CircularProgressIndicator(); // Or a splash screen
               } else {
                 final bool isFirstLaunch = snapshot.data ?? true;
-                return isFirstLaunch ? IntroScreen() : UserDataCollection();
+                return isFirstLaunch ? IntroScreen() : IntroScreen();
               }
             },
           ),
