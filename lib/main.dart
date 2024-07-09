@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
                 return CircularProgressIndicator(); // Or a splash screen
               } else {
                 final bool isFirstLaunch = snapshot.data ?? true;
-                return isFirstLaunch ? IntroScreen() : IntroScreen();
+                return isFirstLaunch ? IntroScreen() : HomeScreen();
               }
             },
           ),

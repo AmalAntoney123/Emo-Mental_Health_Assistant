@@ -208,12 +208,12 @@ class _SigninScreenState extends State<SigninScreen> {
                     onPressed: () => Navigator.of(context).pop(false),
                   ),
                   ElevatedButton(
-                    child: Text('Yes'),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: theme.colorScheme.background,
                       backgroundColor: theme.colorScheme.onPrimary,
                     ),
                     onPressed: () => Navigator.of(context).pop(true),
+                    child: Text('Yes'),
                   ),
                 ],
               );
