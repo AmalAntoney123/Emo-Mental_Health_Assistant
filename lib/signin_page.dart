@@ -1,5 +1,6 @@
 // ignore_for_file: use_build_context_synchronously, prefer_const_constructors
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:emo/theme/theme_notifier.dart';
@@ -174,8 +175,20 @@ class _SigninScreenState extends State<SigninScreen> {
       // If we get here, sign in was successful
       if (userCredential.user != null) {
         if (userCredential.user!.emailVerified) {
-          // Email is verified, proceed to home screen
-          Navigator.pushReplacementNamed(context, Routes.userDataCollection);
+          // Check if user data exists
+          final databaseReference = FirebaseDatabase.instance.ref();
+          final userDataSnapshot = await databaseReference
+              .child('users')
+              .child(userCredential.user!.uid)
+              .get();
+
+          if (userDataSnapshot.exists) {
+            // User data exists, go to home screen
+            Navigator.pushReplacementNamed(context, Routes.homeScreen);
+          } else {
+            // User data doesn't exist, go to data collection page
+            Navigator.pushReplacementNamed(context, Routes.userDataCollection);
+          }
         } else {
           // Email is not verified
           ScaffoldMessenger.of(context).showSnackBar(
@@ -208,12 +221,12 @@ class _SigninScreenState extends State<SigninScreen> {
                     onPressed: () => Navigator.of(context).pop(false),
                   ),
                   ElevatedButton(
+                    child: Text('Yes'),
                     style: ElevatedButton.styleFrom(
                       foregroundColor: theme.colorScheme.background,
                       backgroundColor: theme.colorScheme.onPrimary,
                     ),
                     onPressed: () => Navigator.of(context).pop(true),
-                    child: Text('Yes'),
                   ),
                 ],
               );

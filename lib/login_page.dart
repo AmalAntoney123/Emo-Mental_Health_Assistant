@@ -2,6 +2,7 @@
 
 import 'package:emo/navigation/navigation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
@@ -163,24 +164,91 @@ class LoginScreen extends StatelessWidget {
         return Center(child: CircularProgressIndicator());
       },
     );
-
     try {
       GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
       GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
-
       AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth?.accessToken,
         idToken: googleAuth?.idToken,
       );
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
       Navigator.pop(context); // Remove loading indicator
 
-      // Navigate to the desired screen after successful login
-      Navigator.pushNamed(context, Routes.homeScreen);
+      if (userCredential.user != null) {
+        if (userCredential.user!.emailVerified) {
+          // Check if user data exists
+          final databaseReference = FirebaseDatabase.instance.ref();
+          final userDataSnapshot = await databaseReference
+              .child('users')
+              .child(userCredential.user!.uid)
+              .get();
+
+          if (userDataSnapshot.exists) {
+            // User data exists, go to home screen
+            Navigator.pushReplacementNamed(context, Routes.homeScreen);
+          } else {
+            // User data doesn't exist, go to data collection page
+            Navigator.pushReplacementNamed(context, Routes.userDataCollection);
+          }
+        } else {
+          // Email is not verified
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                content: Text('Please verify your email before logging in.')),
+          );
+          // Optionally, offer to resend verification email
+          bool? resend = await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              final theme = Theme.of(context);
+              return AlertDialog(
+                backgroundColor: theme.colorScheme.background,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                title: Text(
+                  'Email not verified',
+                  style: TextStyle(color: theme.colorScheme.onPrimary),
+                ),
+                content: Text(
+                  'Would you like to resend the verification email?',
+                  style: TextStyle(color: theme.colorScheme.primary),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text(
+                      'No',
+                      style: TextStyle(color: theme.colorScheme.onPrimary),
+                    ),
+                    onPressed: () => Navigator.of(context).pop(false),
+                  ),
+                  ElevatedButton(
+                    child: Text('Yes'),
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: theme.colorScheme.background,
+                      backgroundColor: theme.colorScheme.onPrimary,
+                    ),
+                    onPressed: () => Navigator.of(context).pop(true),
+                  ),
+                ],
+              );
+            },
+          );
+          if (resend == true) {
+            await userCredential.user!.sendEmailVerification();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                  content: Text(
+                      'Verification email sent. Please check your inbox.')),
+            );
+          }
+          // Sign out the user since they haven't verified their email
+          await FirebaseAuth.instance.signOut();
+        }
+      }
     } catch (e) {
       Navigator.pop(context); // Remove loading indicator
-
       Fluttertoast.showToast(
         msg: 'Sign in failed: $e',
         toastLength: Toast.LENGTH_LONG,

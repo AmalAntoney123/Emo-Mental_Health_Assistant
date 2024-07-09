@@ -15,7 +15,7 @@ class UserDataCollection extends StatefulWidget {
 
 class _UserDataCollectionState extends State<UserDataCollection> {
   int activeStep = 0;
-  final int totalSteps = 6;
+  final int totalSteps = 5;
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
@@ -23,7 +23,6 @@ class _UserDataCollectionState extends State<UserDataCollection> {
   final TextEditingController countryController = TextEditingController();
   String? mentalHealthGoal;
   List<String> selectedInterests = [];
-  bool isTherapist = false;
 
   bool isLoading = false;
 
@@ -50,38 +49,38 @@ class _UserDataCollectionState extends State<UserDataCollection> {
     'Stress management'
   ];
 
+  final _formKey = GlobalKey<FormState>();
+
   @override
   Widget build(BuildContext context) {
-    return OnBoardingSlider(
-      headerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      finishButtonText: 'Submit',
-      background: [
-        Container(color: Theme.of(context).scaffoldBackgroundColor),
-        Container(color: Theme.of(context).scaffoldBackgroundColor),
-        Container(color: Theme.of(context).scaffoldBackgroundColor),
-        Container(color: Theme.of(context).scaffoldBackgroundColor),
-        Container(color: Theme.of(context).scaffoldBackgroundColor),
-      ],
-      controllerColor: Theme.of(context).colorScheme.onPrimary,
-      totalPage: 5,
-      speed: 1.8,
-      pageBodies: [
-        _buildNameStep(),
-        _buildAgeGenderStep(),
-        _buildCountryStep(),
-        _buildMentalHealthGoalStep(),
-        _buildInterestsStep(),
-      ],
-      onFinish: _submitUserInfo,
-      finishButtonStyle: FinishButtonStyle(
-        backgroundColor: Theme.of(context)
-            .colorScheme
-            .onPrimary, // Set your desired button background color
-        foregroundColor: Theme.of(context)
-            .colorScheme
-            .background, // Set your desired text (foreground) color
-        elevation:
-            3, // Adjust elevation as needed// Adjust text style as needed
+    return Form(
+      key: _formKey,
+      child: OnBoardingSlider(
+        headerBackgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        finishButtonText: 'Submit',
+        background: List.generate(
+            5,
+            (index) =>
+                Container(color: Theme.of(context).scaffoldBackgroundColor)),
+        totalPage: 5,
+        speed: 1.8,
+        pageBodies: [
+          _buildNameStep(),
+          _buildAgeGenderStep(),
+          _buildCountryStep(),
+          _buildMentalHealthGoalStep(),
+          _buildInterestsStep(),
+        ],
+        onFinish: () {
+          if (_formKey.currentState!.validate()) {
+            _submitUserInfo();
+          }
+        },
+        finishButtonStyle: FinishButtonStyle(
+          backgroundColor: Theme.of(context).colorScheme.onPrimary,
+          foregroundColor: Theme.of(context).colorScheme.background,
+          elevation: 3,
+        ),
       ),
     );
   }
@@ -91,7 +90,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
-          SizedBox(height: 60), // Added space at the top
+          SizedBox(height: 60),
           Text(
             'Emo',
             style: TextStyle(
@@ -102,7 +101,6 @@ class _UserDataCollectionState extends State<UserDataCollection> {
             textAlign: TextAlign.center,
           ),
           Expanded(
-            // This will push the content to the center
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -116,7 +114,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 40),
-                TextField(
+                TextFormField(
                   controller: nameController,
                   decoration: InputDecoration(
                     labelText: 'Full Name',
@@ -127,11 +125,20 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                   ),
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your name';
+                    }
+                    if (value.length < 2) {
+                      return 'Name must be at least 2 characters long';
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),
           ),
-          SizedBox(height: 60), // Added space at the bottom
+          SizedBox(height: 60),
         ],
       ),
     );
@@ -142,7 +149,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
-          SizedBox(height: 60), // Added space at the top
+          SizedBox(height: 60),
           Text(
             'Emo',
             style: TextStyle(
@@ -153,7 +160,6 @@ class _UserDataCollectionState extends State<UserDataCollection> {
             textAlign: TextAlign.center,
           ),
           Expanded(
-            // This will push the content to the center
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -167,7 +173,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 40),
-                TextField(
+                TextFormField(
                   controller: ageController,
                   decoration: InputDecoration(
                     labelText: 'Age',
@@ -178,6 +184,17 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                   ),
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                  keyboardType: TextInputType.number,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your age';
+                    }
+                    int? age = int.tryParse(value);
+                    if (age == null || age < 13 || age > 120) {
+                      return 'Please enter a valid age between 13 and 120';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 20),
                 DropdownButtonFormField<String>(
@@ -203,13 +220,19 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                       gender = newValue;
                     });
                   },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a gender';
+                    }
+                    return null;
+                  },
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 60), // Added space at the bottom
+          SizedBox(height: 60),
         ],
       ),
     );
@@ -220,7 +243,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
-          SizedBox(height: 60), // Added space at the top
+          SizedBox(height: 60),
           Text(
             'Emo',
             style: TextStyle(
@@ -231,7 +254,6 @@ class _UserDataCollectionState extends State<UserDataCollection> {
             textAlign: TextAlign.center,
           ),
           Expanded(
-            // This will push the content to the center
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -245,7 +267,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 40),
-                TextField(
+                TextFormField(
                   controller: countryController,
                   decoration: InputDecoration(
                     labelText: 'Country',
@@ -256,11 +278,20 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                   ),
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your country';
+                    }
+                    if (value.length < 2) {
+                      return 'Country name must be at least 2 characters long';
+                    }
+                    return null;
+                  },
                 ),
               ],
             ),
           ),
-          SizedBox(height: 60), // Added space at the bottom
+          SizedBox(height: 60),
         ],
       ),
     );
@@ -271,7 +302,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
-          SizedBox(height: 60), // Added space at the top
+          SizedBox(height: 60),
           Text(
             'Emo',
             style: TextStyle(
@@ -282,7 +313,6 @@ class _UserDataCollectionState extends State<UserDataCollection> {
             textAlign: TextAlign.center,
           ),
           Expanded(
-            // This will push the content to the center
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -325,13 +355,19 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                       mentalHealthGoal = newValue;
                     });
                   },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please select a mental health goal';
+                    }
+                    return null;
+                  },
                   style:
                       TextStyle(color: Theme.of(context).colorScheme.onPrimary),
                 ),
               ],
             ),
           ),
-          SizedBox(height: 60), // Added space at the bottom
+          SizedBox(height: 60),
         ],
       ),
     );
@@ -342,7 +378,7 @@ class _UserDataCollectionState extends State<UserDataCollection> {
       padding: const EdgeInsets.symmetric(horizontal: 40),
       child: Column(
         children: [
-          SizedBox(height: 60), // Added space at the top
+          SizedBox(height: 60),
           Text(
             'Emo',
             style: TextStyle(
@@ -353,7 +389,6 @@ class _UserDataCollectionState extends State<UserDataCollection> {
             textAlign: TextAlign.center,
           ),
           Expanded(
-            // This will push the content to the center
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -417,16 +452,30 @@ class _UserDataCollectionState extends State<UserDataCollection> {
                       );
                     }).toList(),
                   ),
+                  SizedBox(height: 20),
+                  if (selectedInterests.isEmpty)
+                    Text(
+                      'Please select at least one interest',
+                      style: TextStyle(color: Colors.red),
+                      textAlign: TextAlign.center,
+                    ),
                 ],
               ),
             ),
-          ), // Added space at the bottom
+          ),
         ],
       ),
     );
   }
 
   Future<void> _submitUserInfo() async {
+    if (selectedInterests.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please select at least one interest')),
+      );
+      return;
+    }
+
     setState(() {
       isLoading = true;
     });
@@ -435,22 +484,32 @@ class _UserDataCollectionState extends State<UserDataCollection> {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final databaseReference = FirebaseDatabase.instance.ref();
-        await databaseReference.child('users').child(user.uid).set({
+
+        // Create the user data map
+        final userData = {
           'name': nameController.text,
           'age': int.parse(ageController.text),
           'gender': gender,
           'country': countryController.text,
           'mentalHealthGoal': mentalHealthGoal,
           'interests': selectedInterests,
-        });
+        };
+
+        // Attempt to set the data and await the result
+        await databaseReference.child('users').child(user.uid).set(userData);
 
         // Navigate to the main app screen
         Navigator.pushReplacementNamed(context, Routes.homeScreen);
+      } else {
+        throw Exception('No authenticated user found');
       }
-    } catch (e) {
-      // Handle any errors
+    } on FirebaseException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error saving user info: $e')),
+        SnackBar(content: Text('Firebase error: ${e.message}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Unknown error occurred: $e')),
       );
     } finally {
       setState(() {

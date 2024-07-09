@@ -11,6 +11,7 @@ analyzer:
   errors:
     deprecated_member_use: ignore
     prefer_const_constructors: ignore
+    use_build_context_synchronously: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:

@@ -64,8 +64,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '598480896445',
     projectId: 'emo-app-3133d',
     storageBucket: 'emo-app-3133d.appspot.com',
-    androidClientId: '598480896445-6kdqpracans69l3f39bfoemd8m704n4k.apps.googleusercontent.com',
-    iosClientId: '598480896445-6nl0m8gtqh215rqe83jjd342a4pmufj2.apps.googleusercontent.com',
+    androidClientId:
+        '598480896445-6kdqpracans69l3f39bfoemd8m704n4k.apps.googleusercontent.com',
+    iosClientId:
+        '598480896445-6nl0m8gtqh215rqe83jjd342a4pmufj2.apps.googleusercontent.com',
     iosBundleId: 'com.example.rentIt',
   );
 
@@ -75,8 +77,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '598480896445',
     projectId: 'emo-app-3133d',
     storageBucket: 'emo-app-3133d.appspot.com',
-    androidClientId: '598480896445-6kdqpracans69l3f39bfoemd8m704n4k.apps.googleusercontent.com',
-    iosClientId: '598480896445-6nl0m8gtqh215rqe83jjd342a4pmufj2.apps.googleusercontent.com',
+    androidClientId:
+        '598480896445-6kdqpracans69l3f39bfoemd8m704n4k.apps.googleusercontent.com',
+    iosClientId:
+        '598480896445-6nl0m8gtqh215rqe83jjd342a4pmufj2.apps.googleusercontent.com',
     iosBundleId: 'com.example.rentIt',
   );
 

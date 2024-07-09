@@ -304,14 +304,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
-  im_stepper:
-    dependency: "direct main"
-    description:
-      name: im_stepper
-      sha256: "84ca411f7c4666cb8762a6dd6eec0353c96c67f674124614263875d0570ca634"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.1+1"
   image:
     dependency: transitive
     description:
@@ -320,14 +312,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.2.0"
-  intl:
-    dependency: "direct main"
-    description:
-      name: intl
-      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.19.0"
   introduction_slider:
     dependency: "direct main"
     description:
