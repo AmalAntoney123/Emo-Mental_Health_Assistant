@@ -5,11 +5,15 @@ import 'package:emo/pages/home/home_page.dart';
 import 'package:emo/pages/intro/intro_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:emo/services/firebase_options.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
   await Firebase.initializeApp();
 
   runApp(
@@ -18,9 +22,9 @@ void main() async {
       child: MyApp(),
     ),
   );
-}
 
-class DefaultFirebaseOptions {}
+  FlutterNativeSplash.remove();
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -36,7 +40,8 @@ class MyApp extends StatelessWidget {
             future: checkFirstLaunch(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator(); // Or a splash screen
+                return const Center(
+                    child: CircularProgressIndicator()); // Or a splash screen
               } else {
                 final bool isFirstLaunch = snapshot.data ?? true;
                 return isFirstLaunch ? IntroScreen() : HomeScreen();

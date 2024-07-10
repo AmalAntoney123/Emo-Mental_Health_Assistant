@@ -20,9 +20,10 @@ class _MainScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   final List<Widget> _screens = [
     HomeContent(),
-    SearchContent(),
-    MessageContent(),
-    ProfileContent(),
+    LeaderboardContent(),
+    JournalContent(),
+    TherapyContent(),
+    SupportGroupContent(),
   ];
 
   @override
@@ -72,8 +73,7 @@ class _MainScreenState extends State<HomeScreen> {
         backgroundColor: const Color.fromRGBO(0, 0, 0, 0),
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.menu,
-              color: Theme.of(context).colorScheme.onBackground),
+          icon: Icon(Icons.menu, color: Theme.of(context).colorScheme.primary),
           onPressed: () {
             _scaffoldKey.currentState?.openDrawer();
           },
@@ -89,7 +89,7 @@ class _MainScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.person,
-                color: Theme.of(context).colorScheme.onBackground),
+                color: Theme.of(context).colorScheme.primary),
             onPressed: () {
               Navigator.push(
                 context,
@@ -102,17 +102,6 @@ class _MainScreenState extends State<HomeScreen> {
       drawer: _buildDrawer(context),
       body: _screens[_currentIndex],
       backgroundColor: Theme.of(context).colorScheme.surface,
-      floatingActionButton: SizedBox(
-        width: 72,
-        height: 72,
-        child: FloatingActionButton(
-          onPressed: () {},
-          elevation: 2.0,
-          backgroundColor: Theme.of(context).colorScheme.onPrimary,
-          child: Icon(Icons.add,
-              size: 30, color: Theme.of(context).colorScheme.primary),
-        ),
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: _buildFloatingBottomAppBar(),
     );
@@ -178,7 +167,7 @@ class _MainScreenState extends State<HomeScreen> {
           borderRadius: BorderRadius.circular(100),
           child: BottomAppBar(
             elevation: 0,
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.secondary,
             child: SizedBox(
               height: 60,
               child: Row(
@@ -187,19 +176,37 @@ class _MainScreenState extends State<HomeScreen> {
                   IconButton(
                     icon: Icon(Icons.home),
                     onPressed: () => setState(() => _currentIndex = 0),
+                    color: _currentIndex == 0
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : null,
                   ),
                   IconButton(
-                    icon: Icon(Icons.search),
+                    icon: Icon(Icons.leaderboard),
                     onPressed: () => setState(() => _currentIndex = 1),
+                    color: _currentIndex == 1
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : null,
                   ),
-                  SizedBox(width: 60),
                   IconButton(
-                    icon: Icon(Icons.message),
+                    icon: Icon(Icons.book),
                     onPressed: () => setState(() => _currentIndex = 2),
+                    color: _currentIndex == 2
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : null,
                   ),
                   IconButton(
-                    icon: Icon(Icons.person),
+                    icon: Icon(Icons.healing),
                     onPressed: () => setState(() => _currentIndex = 3),
+                    color: _currentIndex == 3
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : null,
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.group),
+                    onPressed: () => setState(() => _currentIndex = 4),
+                    color: _currentIndex == 4
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : null,
                   ),
                 ],
               ),
@@ -225,7 +232,7 @@ class _MainScreenState extends State<HomeScreen> {
         Text(
           count.toString(),
           style: TextStyle(
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.primary,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -234,23 +241,30 @@ class _MainScreenState extends State<HomeScreen> {
   }
 }
 
-class SearchContent extends StatelessWidget {
+class LeaderboardContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Search Screen'));
+    return Center(child: Text('Leaderboard Screen'));
   }
 }
 
-class MessageContent extends StatelessWidget {
+class JournalContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Message Screen'));
+    return Center(child: Text('Journal Screen'));
   }
 }
 
-class ProfileContent extends StatelessWidget {
+class TherapyContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(child: Text('Profile Screen'));
+    return Center(child: Text('Therapy Screen'));
+  }
+}
+
+class SupportGroupContent extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(child: Text('Support Group Screen'));
   }
 }

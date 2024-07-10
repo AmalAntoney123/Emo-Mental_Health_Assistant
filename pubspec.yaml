@@ -46,7 +46,8 @@ dependencies:
   toast: ^0.3.0
   firebase_database: ^11.0.2
   flutter_onboarding_slider: ^1.0.11
-
+  flutter_native_splash: ^2.4.1
+  visibility_detector: ^0.4.0+2
 
 
 dev_dependencies:
@@ -92,6 +93,12 @@ flutter:
   assets:
     - assets/
   #   - images/a_dot_ham.jpeg
+
+flutter_native_splash:
+  color: "#8883f0" # The color you specified
+  image: assets/emo-splash.png # The image you specified
+  android_12:
+    image: assets/emo-splash.png # The same image for Android 12+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
