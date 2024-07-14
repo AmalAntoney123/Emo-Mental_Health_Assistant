@@ -48,6 +48,7 @@ dependencies:
   flutter_onboarding_slider: ^1.0.11
   flutter_native_splash: ^2.4.1
   visibility_detector: ^0.4.0+2
+  flutter_animate: ^4.5.0
 
 
 dev_dependencies:
